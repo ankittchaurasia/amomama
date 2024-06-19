@@ -1,19 +1,26 @@
 // import cheerio from 'cheerio'
-import { extract } from '@extractus/article-extractor'
+import { extract, addTransformations } from '@extractus/article-extractor'
 import WPAPI from "wpapi";
 import axios from 'axios'
 
 export async function POST(request: Request) {
 
     const requestData = await request.json();
-    const { url } = requestData
+    const { url, noImage, draft } = requestData
 
-    // const url = "https://news.amomama.com/426434-american-idol-star-and-grammy-winning.html"
-    // const html = await fetch(url).then(response => response.text())
-    
+    if(noImage){
+        addTransformations([{
+            patterns: [/amomama/i],
+            pre: (document) => {
+                document.querySelectorAll('div.ki').forEach(e => e.remove());
+                return document;
+            }
+        }])
+    }
+
     try {
-        const article = await extract(url)
-
+        const article = await extract(url);
+       
         const to = new WPAPI({
             endpoint: 'https://forever-love-animals.com/wp-json',
             username: 'ankit',
@@ -28,7 +35,7 @@ export async function POST(request: Request) {
         const newPost = await to.posts().create({
             title: article.title,
             content: article.content,
-            status: 'publish',
+            status: draft ? 'draft' : 'publish',
             featured_media: media.id
         })
     
@@ -37,17 +44,9 @@ export async function POST(request: Request) {
         if (newPost.id) {
             status = "success"
         }
-        return new Response(JSON.stringify({status}), {
-                headers: {
-                    "content-type": "application/json",
-                },
-        })
+        return Response.json({ status })
     }catch(e){
-        return new Response(JSON.stringify({status: "error", msg: e.message}), {
-            headers: {
-                "content-type": "application/json",
-            },
-        })
+        return Response.json({ status: "error", msg: e.message })
     }
 
 }

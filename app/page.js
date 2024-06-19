@@ -4,6 +4,8 @@ import { useState } from "react";
 export default function Home() {
 
   const [url, setUrl] = useState('');
+  const [noImage, setNoImage] = useState(false)
+  const [draft, setDraft] = useState(false)
   const [output, setOutput] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -20,7 +22,7 @@ export default function Home() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({url})
+      body: JSON.stringify({url, noImage, draft})
     });
     const data = await response.json();
     //output
@@ -42,6 +44,19 @@ export default function Home() {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />
+        <br />
+      <div className="flex items-center">
+        <input type="checkbox" id="noImage" className="w-5 h-5 p-1 m-1" name="noImage"  
+          checked={noImage} onChange={(e) => setNoImage(e.target.checked)} 
+        />
+        <label htmlFor="noImage">No Image</label>
+      </div>
+      <div className="flex items-center">
+        <input type="checkbox" id="draft" className="w-5 h-5 p-1 m-1" name="draft"  
+          checked={draft} onChange={(e) => setDraft(e.target.checked)}
+        />
+        <label htmlFor="draft">Draft</label>
+      </div>
         <button className="bg-blue-500 text-white px-3 py-1 m-2 rounded" onClick={submit} disabled={loading}>
         {loading ? (
           <div className="animate-spin">@</div>
