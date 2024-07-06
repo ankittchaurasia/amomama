@@ -12,7 +12,7 @@ export async function POST(request: Request) {
         addTransformations([{
             patterns: [/amomama/i],
             pre: (document) => {
-                document.querySelectorAll('div.ki').forEach(e => e.remove());
+                document.querySelectorAll('div.pi').forEach(e => e.remove());
                 return document;
             }
         }])
