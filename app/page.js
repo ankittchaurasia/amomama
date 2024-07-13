@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-import { Button, Checkbox, Container, SimpleGrid, Box, TextInput, Title } from "@mantine/core";
+import { Button, Checkbox, Container, SimpleGrid, Box, TextInput, Title, Select } from "@mantine/core";
 
 export default function Home() {
 
@@ -9,6 +9,7 @@ export default function Home() {
   const [draft, setDraft] = useState(false)
   const [output, setOutput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [site, setSite] = useState("F")
 
 
   const submit = async() => {
@@ -23,7 +24,7 @@ export default function Home() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({url, noImage, draft})
+      body: JSON.stringify({url, noImage, draft, site})
     });
     const data = await response.json();
     //output
@@ -37,6 +38,7 @@ export default function Home() {
 
       <Title pt="xl" mb="lg">Scrape Amomama</Title>
       <TextInput placeholder="Enter the URL" value={url} onChange={(e) => setUrl(e.target.value)} />
+      <Select data={[{value:"F", label:"ForeverLoveAnimals"}, {value:"A", label:"AnimalsTrend"}]} value={site} onChange={setSite} label="Select Site" />
       
       <SimpleGrid cols={2} gap="md" mt="lg">
         <Checkbox checked={noImage} onChange={(e) => setNoImage(e.currentTarget.checked)} label="No Image" />

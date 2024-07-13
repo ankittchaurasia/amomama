@@ -6,7 +6,7 @@ import axios from 'axios'
 export async function POST(request: Request) {
 
     const requestData = await request.json();
-    const { url, noImage, draft } = requestData
+    const { url, noImage, draft, site } = requestData
 
     if(noImage){
         addTransformations([{
@@ -18,14 +18,20 @@ export async function POST(request: Request) {
         }])
     }
 
+    const loginData = site == "F" ? ({
+        endpoint: 'https://forever-love-animals.com/wp-json',
+        username: 'ankit',
+        password: 'Ankit@gear5!#'
+    }) : ({
+        endpoint: 'https://animalstrend.com/wp-json',
+        username: 'nora',
+        password: 'Leonora2001@!'
+    });
+
     try {
         const article = await extract(url);
        
-        const to = new WPAPI({
-            endpoint: 'https://forever-love-animals.com/wp-json',
-            username: 'ankit',
-            password: 'Ankit@gear5!#'
-        });
+        const to = new WPAPI(loginData);
     
         //upload featured image to wordpress
         const response = await axios.get(article.image, { responseType: 'arraybuffer' });
