@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     const removeImage = noImage ? ([{
         patterns: [/amomama/i],
         pre: (document) => {
-            document.querySelectorAll('div.pi').forEach(e => e.remove());
+            document.querySelectorAll('div.ti.ui').forEach(e => e.remove());
             return document;
         }
     }]) : [];
@@ -53,6 +53,8 @@ export async function POST(request: Request) {
         const article = await extract(url);
 
         const to = new WPAPI(loginData);
+
+     
 
         try{
             const response = await axios.get(article.image || wpImage || '', { responseType: 'arraybuffer' });
