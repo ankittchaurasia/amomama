@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     const removeImage = noImage ? ([{
         patterns: [/amomama/i],
         pre: (document) => {
-            document.querySelectorAll('div.ti.ui').forEach(e => e.remove());
+            document.querySelectorAll('div.ti').forEach(e => e.remove());
             return document;
         }
     }]) : [];
