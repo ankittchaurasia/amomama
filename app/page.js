@@ -28,6 +28,8 @@ export default function Home() {
     });
     const data = await response.json();
     //output
+
+    // console.log(data);
     setOutput(data)
     console.log(data)
     setLoading(false)
@@ -53,6 +55,7 @@ export default function Home() {
     {output && 
       <output><pre>{JSON.stringify(output, null, 2)}</pre></output>
     }
+    {/* <div dangerouslySetInnerHTML={{__html: output.html}}></div> */}
     </Container>
 
   );

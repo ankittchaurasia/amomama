@@ -1,5 +1,5 @@
 // import cheerio from 'cheerio'
-import { extract, extractFromHtml, addTransformations } from '@extractus/article-extractor'
+import { extract, addTransformations } from '@extractus/article-extractor'
 import WPAPI from "wpapi";
 import axios from 'axios'
 
@@ -15,13 +15,19 @@ export async function POST(request: Request) {
     const removeImage = noImage ? ([{
         patterns: [/amomama/i],
         pre: (document) => {
-            document.querySelectorAll('div.wi').forEach(e => e.remove());
+            document.querySelector('main').querySelectorAll('img').forEach(img =>{
+                const wrapper = img.closest('div[style*="display"]');
+                if (wrapper) {
+                    wrapper.remove();
+                }
+            } );
             return document;
         }
     }]) : [];
 
 
-    addTransformations([...removeImage, 
+    addTransformations([
+        ...removeImage, 
         {
             patterns: [/.*/],
             pre: (document) => {
@@ -53,8 +59,6 @@ export async function POST(request: Request) {
         const article = await extract(url);
 
         const to = new WPAPI(loginData);
-
-     
 
         try{
             const response = await axios.get(article.image || wpImage || '', { responseType: 'arraybuffer' });
