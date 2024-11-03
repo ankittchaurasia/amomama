@@ -1,62 +1,37 @@
 "use client"
+import { Button, Container, SimpleGrid, TextInput, Select } from "@mantine/core";
+import EditModal from "..//components/Modal";
 import { useState } from "react";
-import { Button, Checkbox, Container, SimpleGrid, Box, TextInput, Title, Select } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 
-export default function Home() {
+export default function Universal() {
+    const [link, setLink] = useState('');
+    const [modalopened, modal] = useDisclosure(false);
+    const [selectedDomain, setSelectedDomain] = useState('1');
 
-  const [url, setUrl] = useState('');
-  const [noImage, setNoImage] = useState(true)
-  const [draft, setDraft] = useState(false)
-  const [output, setOutput] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [site, setSite] = useState("F")
+    return(
+            <Container size="md" mt="lg">
+                <h1 className="text-3xl">Universal Scraper</h1>
+                <TextInput mt={10} placeholder="Enter URL" value={link} onChange={(e) => setLink(e.target.value)} />
+                <Select
+                    label="Select Domain"
+                    value={selectedDomain}
+                    onChange={(value) => setSelectedDomain(value || '1')}
+                    data={[
+                        { value: '1', label: 'Forever Love' },
+                        { value: '2', label: 'Animals Trend' },
+                    ]}
+                    my="sm"
+                />
+                <SimpleGrid cols={2}>
+                <Button mt={10} onClick={modal.open}>Scrape</Button>
+                <Button color="red" mt={10} onClick={ () => setLink('') }>Clear</Button>
+                </SimpleGrid>
 
+                {link && modalopened && (
+                    <EditModal link={link} opened={modalopened} domain={selectedDomain} close={modal.close} />
+                )}
 
-  const submit = async() => {
-    if(url === ''){
-      alert('Please enter a URL')
-      return
-    }
-    setLoading(true)
-
-    const response = await fetch('/api/run', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({url, noImage, draft, site})
-    });
-    const data = await response.json();
-    //output
-
-    // console.log(data);
-    setOutput(data)
-    console.log(data)
-    setLoading(false)
-
-  }
-  return (
-    <Container size="sm" pt="xl">
-
-      <Title pt="xl" mb="lg">Scrape Amomama</Title>
-      <TextInput placeholder="Enter the URL" value={url} onChange={(e) => setUrl(e.target.value)} />
-      <Select data={[{value:"F", label:"ForeverLoveAnimals"}, {value:"A", label:"AnimalsTrend"}]} value={site} onChange={setSite} label="Select Site" />
-      
-      <SimpleGrid cols={2} gap="md" mt="lg">
-        <Checkbox checked={noImage} onChange={(e) => setNoImage(e.currentTarget.checked)} label="No Image" />
-        <Checkbox checked={draft} onChange={(e) => setDraft(e.currentTarget.checked)} label="Draft" />
-      </SimpleGrid>
-
-    <Box mt="lg" ta="center">
-      <Button fullWidth onClick={submit} loading={loading} disabled={loading} variant="light" color="blue">
-        {loading ? 'Loading...' : 'Submit'}
-      </Button>
-    </Box>
-    {output && 
-      <output><pre>{JSON.stringify(output, null, 2)}</pre></output>
-    }
-    {/* <div dangerouslySetInnerHTML={{__html: output.html}}></div> */}
-    </Container>
-
-  );
+            </Container>
+    );
 }
