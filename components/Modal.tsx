@@ -121,10 +121,11 @@ export default function EditModal({link, opened, close, domain}: ModalProps) {
     useEffect(() => {
       if (!editor) return;
       let {from, to} = editor.state.selection;
-      editor.commands.setContent(content,
-        false, {
-          preserveWhitespace: "full"
-        });
+      try{
+        editor.commands.setContent(content,  false, { preserveWhitespace: "full" });
+      }catch(error:any){
+        console.log(error);
+      }
       editor.commands.setTextSelection({from, to});
     }, [editor, content]);
 
